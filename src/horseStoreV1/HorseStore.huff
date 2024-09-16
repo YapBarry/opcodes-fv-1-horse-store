@@ -1,0 +1,4 @@
+// send calldata -> function dispatch -> function
+
+// 60008060093d393df3
+#define macro MAIN() = takes(0) returns(0) {}
