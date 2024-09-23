@@ -2,5 +2,13 @@
 
 // 60008060093d393df3
 #define macro MAIN() = takes(0) returns(0) {
-    0x00
+    // 0x00        // [0]
+    // 0x02        // TOP [2, 0] BOTTOM
+    // calldataload // [calldata]
+    // How do we cut down the calldata -> func selector?
+    // 64/2 = 32 bytes -> right
+    // We need to right shift by 28 bytes, 224 bits
+    // 0xe0        // [0xe0, calldata (32)]
+    // shr        // [function_selector]
+    0x00 calldataload 0xE0 shr  // [function_selector]
 }
