@@ -32,6 +32,8 @@
     readJump                // [readJump, true_if_func_selector_matches]    
     jumpi                   // []
 
+    0x00 0x00 revert        // []
+
     updateJump:
         SET_NUMBER_OF_HORSES()
 
