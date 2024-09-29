@@ -19,15 +19,26 @@
     // 0xe026c017 = read
 
     // updateHorseNumber selector
-    0xcdfead2e              // [0xcdfead2e, function_selector]
-    eq                      // [true_if_func_selector_matches]
+    dup1                    // [function_selector, function_selector]
+    0xcdfead2e              // [0xcdfead2e, function_selector, function_selector]
+    eq                      // [true_if_func_selector_matches, function_selector]
     // jump to updateHorseNumber code if true  
     updateJump              // [updateHorseNumberProgramCounter, true/false]
-    jumpi                   // []
+    jumpi                   // [function_selector]
 
+    // readNumberOfHorses, 0xe026c017
+    0xe026c017              // [0xe026c017, function_selector] 
+    eq                      // [true_if_func_selector_matches]
+    readJump                // [readJump, true_if_func_selector_matches]    
+    jumpi                   // []
 
     updateJump:
         SET_NUMBER_OF_HORSES()
+
+    readJump:
+        GET_NUMBER_OF_HORSES()
 }
 
 #define macro SET_NUMBER_OF_HORSES() = takes(0) returns(0){}
+
+#define macro GET_NUMBER_OF_HORSES() = takes(0) returns(0){}
