@@ -36,4 +36,15 @@
     stop
 }
 
-#define macro GET_NUMBER_OF_HORSES() = takes(0) returns(0){}
+#define macro GET_NUMBER_OF_HORSES() = takes(0) returns(0){
+    // 1. Get the storage slot
+    // 2. Load the value of that slot into memory
+    // 3. Return
+    [NUMBER_OF_HORSES_STORAGE_SLOT] // [key]
+    sload                           // [value]
+    0x00                            // [0, value]
+    mstore                          // []  // Memory: [value]
+
+    // 0x20 == 32 bytes
+    0x20 0x00 return               // []
+}
