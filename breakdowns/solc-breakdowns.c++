@@ -36,23 +36,33 @@ RETURN         // [] - copy 165 opcodes from 0x00 location in the memory and ret
 INVALID        // [] - signals end of contract creation code
 
 // Code that is stuck on chain
+// Entry point for all calls
+// Free memory pointer
+PUSH1 0x80
 PUSH1 0x40
 MSTORE
-CALLVALUE
-DUP1
-ISZERO
-PUSH1 0x0e
+
+// Check if any eth is sent with the call, if yes, revert
+CALLVALUE       // [msg.value]
+DUP1            // [msg.value, msg.value]
+ISZERO          // [msg.value == 0, msg.value]
+PUSH1 0x0e      // [0x0e, msg.value == 0, msg.value]
+JUMPI           // [msg.value]
+PUSH0           // [0x00, msg.value]
+DUP1            // [0x00, 0x00, msg.value]
+REVERT          // [msg.value]
+
+// If no eth is sent, continue here
+// Checking to see if there is enough bytes in calldata for a function selector
+JUMPDEST        // [msg.value]
+POP             // []
+PUSH1 0x04      // [0x04]
+CALLDATASIZE    // [calldata_size, 0x04]
+LT              // [calldata_size < 0x04]
+PUSH1 0x30      // [0x30, calldata_size < 0x04]
 JUMPI
-PUSH0
-DUP1
-REVERT
-JUMPDEST
-POP
-PUSH1 0x04
-CALLDATASIZE
-LT
-PUSH1 0x30
-JUMPI
+// if calldata_size < 0x04, go to calldata_jump
+
 PUSH0
 CALLDATALOAD
 PUSH1 0xe0
@@ -67,10 +77,14 @@ PUSH4 0xe026c017
 EQ
 PUSH1 0x45
 JUMPI
-JUMPDEST
-PUSH0
-DUP1
-REVERT
+
+// Calldata jump
+// Revert Jumpdest
+JUMPDEST    // []
+PUSH0       // [0]
+DUP1        // [0, 0]
+REVERT      // [0]
+
 JUMPDEST
 PUSH1 0x43
 PUSH1 0x3f
