@@ -63,20 +63,27 @@ PUSH1 0x30      // [0x30, calldata_size < 0x04]
 JUMPI
 // if calldata_size < 0x04, go to calldata_jump
 
-PUSH0
-CALLDATALOAD
-PUSH1 0xe0
-SHR
-DUP1
-PUSH4 0xcdfead2e
-EQ
-PUSH1 0x34
-JUMPI
-DUP1
-PUSH4 0xe026c017
-EQ
-PUSH1 0x45
-JUMPI
+// function dispatcher in solidity
+PUSH0           // [0x00]
+CALLDATALOAD    // [32 bytes of calldata]
+PUSH1 0xe0      // [0xe0, 32 bytes of calldata]
+SHR             // [calldata[0:4]] // function selector //  - shr shifts calldata to the right and pads the left part with 0s
+
+// Dispatching for setNumberOfHorses
+DUP1            // [function selector, function selector]
+PUSH4 0xcdfead2e // [0xcdfead2e, function selector, function selector]
+EQ               // [0xcdfead2e == function selector, function selector]
+PUSH1 0x34       // [0x34, 0xcdfead2e == function selector, function selector]
+JUMPI            // [function selector]
+// if func_selector == 0xcdfead2e -> set_num_of_horses
+
+// Dispatching for getNumberOfHorses
+DUP1             // [function selector, function selector]
+PUSH4 0xe026c017 // [0xe026c017, function selector, function selector]
+EQ               // [0xe026c017 == function selector, function selector]
+PUSH1 0x45       // [0x45, 0xe026c017 == function selector, function selector]
+JUMPI            // [function selector]
+// if func_selector == 0xe026c017 -> get_num_of_horses
 
 // Calldata jump
 // Revert Jumpdest
@@ -85,13 +92,14 @@ PUSH0       // [0]
 DUP1        // [0, 0]
 REVERT      // [0]
 
-JUMPDEST
-PUSH1 0x43
-PUSH1 0x3f
-CALLDATASIZE
-PUSH1 0x04
-PUSH1 0x59
-JUMP
+// updateHorseNumber jump dest 1
+JUMPDEST        // [function selector]
+PUSH1 0x43      // [0x43, function selector]
+PUSH1 0x3f      // [0x3f, 0x43, function selector]
+CALLDATASIZE    // [calldata_size, 0x3f, 0x43, function selector]
+PUSH1 0x04      // [0x04, calldata_size, 0x3f, 0x43, function selector]
+PUSH1 0x59      // [0x59, 0x04, calldata_size, 0x3f, 0x43, function selector]
+JUMP            // [0x04, calldata_size, 0x3f, 0x43, function selector]
 JUMPDEST
 PUSH0
 SSTORE
@@ -115,19 +123,28 @@ SWAP2
 SUB
 SWAP1
 RETURN
-JUMPDEST
-PUSH0
-PUSH1 0x20
-DUP3
-DUP5
-SUB
-SLT
-ISZERO
-PUSH1 0x68
-JUMPI
-PUSH0
-DUP1
-REVERT
+
+// updateHorseNumber jump dest 2
+JUMPDEST        // [0x04, calldata_size, 0x3f, 0x43, func_selector]
+PUSH0           // [0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+PUSH1 0x20      // [0x20, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+DUP3            // [0x04, 0x20, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+DUP5            // [calldata_size, 0x04, 0x20, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+SUB             // [calldata_size - 0x04, 0x20, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+// is there more calldata than just the function selector?
+SLT             // [calldata_size - 0x04 < 0x20, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+ISZERO          // [more_calldata_than_selector, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+PUSH1 0x68      // [0x68, more_calldata_than_selector, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+JUMPI           // [0, 0x04, calldata_size, 0x3f, 0x43, function selector]
+// We are going to jump to jump dest 3 if there is more calldata than:
+// function selector + 0x20
+
+// Revert if there isn't enough calldata!
+PUSH0           // [0x00, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+DUP1            // [0x00, 0x00, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+REVERT          // [0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+
+// updateHorseNumber jump dest 3
 JUMPDEST
 POP
 CALLDATALOAD
