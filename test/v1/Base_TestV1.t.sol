@@ -3,12 +3,13 @@ pragma solidity 0.8.26;
 
 import {HorseStore} from "../../src/horseStoreV1/horseStore.sol";
 import {Test, console2} from "forge-std/Test.sol";
+import {IHorseStore} from "./IHorseStore.sol";
 
 abstract contract Base_TestV1 is Test {
-    HorseStore public horseStore;
+    IHorseStore public horseStore;
 
-    function setUp() public virtual {
-        horseStore = new HorseStore();
+    function setUp() public virtual {   
+        horseStore = IHorseStore(address(new HorseStore()));
     }
 
     function testReadValue() public {

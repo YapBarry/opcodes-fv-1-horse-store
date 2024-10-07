@@ -117,23 +117,27 @@ JUMP            // [function selector]
 // Jump dest 5
 JUMPDEST        // [function selector]
 STOP            // // [function selector]  
-JUMPDEST
-PUSH0
-SLOAD
-PUSH1 0x40
-MLOAD
-SWAP1
-DUP2
-MSTORE
-PUSH1 0x20
-ADD
-PUSH1 0x40
-MLOAD
-DUP1
-SWAP2
-SUB
-SWAP1
-RETURN
+
+// readNumberOfHorses jump dest 1
+// the only jump dest for readNumberOfHorses
+JUMPDEST        // [function selector]
+PUSH0           // [0, function selector]
+SLOAD           // [numHorses, function selector]
+PUSH1 0x40      // [0x40, numHorses, function selector]
+MLOAD           // [0x80, numHorses, function selector] // Memory [0x40: 0x80] (free memory pointer)
+SWAP1           // [numHorses, 0x80, function selector]
+DUP2            // [0x80, numHorses, 0x80, function selector]
+MSTORE          // [0x80, function selector] Memory: 0x80: numHorses
+PUSH1 0x20      // [0x20, 0x80, function selector]
+ADD             // [0xa0, function selector]
+PUSH1 0x40      // [0x40, 0xa0, function selector]
+MLOAD           // [0x80, 0xa0, function selector]
+DUP1            // [0x80, 0x80, 0xa0, function selector]
+SWAP2           // [0xa0, 0x80, 0x80, function selector]
+SUB             // [0xa0 - 0x80, 0x80, function selector]
+SWAP1           // [0x80, 0xa0 - 0x80, function selector]
+// return a value that is 32 bytes in size that is located at 0x80 in memory
+RETURN          // [function selector]
 
 // updateHorseNumber jump dest 2
 JUMPDEST        // [0x04, calldata_size, 0x3f, 0x43, func_selector]
@@ -167,6 +171,8 @@ SWAP2           // [0x3f, calldata_size, calldata(of numberToUpdate), 0x43, func
 SWAP1           // [calldata_size, 0x3f, calldata(of numberToUpdate), 0x43, function selector]
 POP             // [0x3f, calldata(of numberToUpdate), 0x43, function selector]]
 JUMP
+
+// 3. Metadata
 INVALID
 LOG2
 PUSH5 0x6970667358
