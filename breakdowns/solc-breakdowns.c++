@@ -144,8 +144,8 @@ DUP5            // [calldata_size, 0x04, 0x20, 0x00, 0x04, calldata_size, 0x3f, 
 SUB             // [calldata_size - 0x04, 0x20, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
 // is there more calldata than just the function selector?
 SLT             // [calldata_size - 0x04 < 0x20, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
-ISZERO          // [more_calldata_than_selector, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
-PUSH1 0x68      // [0x68, more_calldata_than_selector, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+ISZERO          // [more_calldata_than_selector?, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
+PUSH1 0x68      // [0x68, more_calldata_than_selector?, 0x00, 0x04, calldata_size, 0x3f, 0x43, function selector]
 JUMPI           // [0, 0x04, calldata_size, 0x3f, 0x43, function selector]
 // We are going to jump to jump dest 3 if there is more calldata than:
 // function selector + 0x20
