@@ -1,8 +1,48 @@
-// write huff code for HorseStoreV2
+// Define Interfaces for the functions
 #define function mintHorse() external
 #define function feedHorse(uint256 horseId) external
 #define function isHappyHorse(uint256 horseId) external view returns (bool)
 
+// Define constants
 #define constant NFT_NAME = 0x486f72736553746f7265 // "HorseStore"
 #define constant NFT_SYMBOL = 0x4853 // "HS"
 #define constant HORSE_HAPPY_IF_FED_WITHIN =  0x15180 // 1 day - 86400 seconds
+
+// Define interface for mapping?
+// mapping(uint256 id => uint256 lastFedTimeStamp) public horseIdToFedTimeStamp;
+#define function getlastFedTimeStamp(uint) public
+#define function setlastFedTimeStamp(uint, uint) public
+
+#define macro MAIN = takes(0) returns(0){
+    // load the function selector
+    0x00 calldataload 0xE0 shr
+    dup1 __FUNC_SIG(mintHorse) eq mintHorseJump jumpi
+
+    dup1 __FUNC_SIG(feedHorse) eq feedHorseJump jumpi
+
+    dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorseJump jumpi
+    dup1 __FUNC_SIG(getlastFedTimeStamp) eq isHappyHorseJump jumpi
+    __FUNC_SIG(setlastFedTimeStamp) eq isHappyHorseJump jumpi
+
+    0x00 0x00 revert
+
+    mintHorseJump:
+
+    feedHorseJump:
+
+    isHappyHorseJump:
+
+    get_lastFedTimeStamp:
+        GET_LAST_FED_TIMESTAMP()
+
+    set_lastFedTimeStamp:
+        SET_LAST_FED_TIMESTAMP()
+}
+
+#define macro GET_LAST_FED_TIMESTAMP = takes(0) returns(0){
+    
+}
+
+#define macro SET_LAST_FED_TIMESTAMP = takes(0) returns(0){
+    
+}
