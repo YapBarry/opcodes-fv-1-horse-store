@@ -1,7 +1,9 @@
 // Define Interfaces for the functions
-#define function mintHorse() external
-#define function feedHorse(uint256 horseId) external
-#define function isHappyHorse(uint256 horseId) external view returns (bool)
+#define function mintHorse() nonpayable returns()
+#define function feedHorse(uint256) nonpayable returns()
+#define function isHappyHorse(uint256) view returns (bool)
+#define function horseIdToFedTimeStamp(uint256) view returns(uint256)
+#define function HORSE_HAPPY_IF_FED_WITHIN() view returns(uint256)
 
 // Define constants
 #define constant NFT_NAME = 0x486f72736553746f7265 // "HorseStore"
@@ -17,26 +19,23 @@
     // load the function selector
     0x00 calldataload 0xE0 shr
     dup1 __FUNC_SIG(mintHorse) eq mintHorseJump jumpi
-
     dup1 __FUNC_SIG(feedHorse) eq feedHorseJump jumpi
-
     dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorseJump jumpi
-    dup1 __FUNC_SIG(getlastFedTimeStamp) eq isHappyHorseJump jumpi
-    __FUNC_SIG(setlastFedTimeStamp) eq isHappyHorseJump jumpi
+    dup1 __FUNC_SIG(horseIdToFedTimeStamp) eq horseIdToFedTimeStamp jumpi
+    dup1 __FUNC_SIG(HORSE_HAPPY_IF_FED_WITHIN) eq horseHappyFedWithin jumpi
 
     0x00 0x00 revert
 
     mintHorseJump:
-
+        MINT_HORSE()
     feedHorseJump:
-
+        FEED_HORSE()
     isHappyHorseJump:
-
-    get_lastFedTimeStamp:
-        GET_LAST_FED_TIMESTAMP()
-
-    set_lastFedTimeStamp:
-        SET_LAST_FED_TIMESTAMP()
+        IS_HAPPY_HORSE()
+    horseIdToFedTimeStamp:
+        HORSE_ID_TO_FED_TIMESTAMP()
+    horseHappyFedWithin:
+        HORSE_HAPPY_IF_FED_WITHIN()
 }
 
 #define macro GET_LAST_FED_TIMESTAMP = takes(0) returns(0){
