@@ -21,6 +21,14 @@
 #define function getlastFedTimeStamp(uint) public
 #define function setlastFedTimeStamp(uint, uint) public
 
+#define macro GET_HORSE_FED_TIMESTAMP(0x00) takes(0) returns(0) {
+    0x00 calldataload               // [horseId]
+    [HORSE_FED_TIMESTAMP_LOCATION]  // [HORSE_FED_TIMESTAMP_LOCATION, horseId]
+    LOAD_ELEMENT_FROM_KEYS(0x00)    // [horseFedTimestamp]
+    0x00 mstore                     // []   // Memory: [0x00: horseFedTimestamp]
+    0x20 0x00 returns               // []
+}
+
 #define macro feedHorse() takes(0) returns(0) {
     timestamp           // [timestamp]
     0x04 calldataload   // [horseId, timestamp]
@@ -48,7 +56,7 @@
     isHappyHorseJump:
         IS_HAPPY_HORSE()
     horseIdToFedTimeStamp:
-        HORSE_ID_TO_FED_TIMESTAMP()
+        GET_HORSE_FED_TIMESTAMP()
     horseHappyFedWithin:
         HORSE_HAPPY_IF_FED_WITHIN()
 }
