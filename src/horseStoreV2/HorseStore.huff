@@ -22,7 +22,7 @@
 #define function setlastFedTimeStamp(uint, uint) public
 
 #define macro GET_HORSE_FED_TIMESTAMP(0x00) takes(0) returns(0) {
-    0x00 calldataload               // [horseId]
+    0x04 calldataload               // [horseId]
     [HORSE_FED_TIMESTAMP_LOCATION]  // [HORSE_FED_TIMESTAMP_LOCATION, horseId]
     LOAD_ELEMENT_FROM_KEYS(0x00)    // [horseFedTimestamp]
     0x00 mstore                     // []   // Memory: [0x00: horseFedTimestamp]
