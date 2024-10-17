@@ -42,6 +42,12 @@
     0x20 0x00 return                      
 }
 
+#define macro HORSE_HAPPY_IF_FED_WITHIN() takes(0) returns(0) {
+    [HORSE_HAPPY_IF_FED_WITHIN]
+    0x00 mstore
+    0x20 0x00 return
+}
+
 #define macro GET_HORSE_FED_TIMESTAMP(0x00) takes(0) returns(0) {
     0x04 calldataload               // [horseId]
     [HORSE_FED_TIMESTAMP_LOCATION]  // [HORSE_FED_TIMESTAMP_LOCATION, horseId]
@@ -80,12 +86,4 @@
         GET_HORSE_FED_TIMESTAMP()
     horseHappyFedWithin:
         HORSE_HAPPY_IF_FED_WITHIN()
-}
-
-#define macro GET_LAST_FED_TIMESTAMP = takes(0) returns(0){
-    
-}
-
-#define macro SET_LAST_FED_TIMESTAMP = takes(0) returns(0){
-    
 }
