@@ -16,13 +16,25 @@
 #define constant NFT_NAME = 0x486f72736553746f7265 // "HorseStore"
 #define constant NFT_SYMBOL = 0x4853 // "HS"
 #define constant HORSE_HAPPY_IF_FED_WITHIN =  0x15180 // 1 day - 86400 seconds
+#define constant TOTAL_SUPPLY = FREE_STORAGE_POINTER()
 
 // Define interface for mapping?
 // mapping(uint256 id => uint256 lastFedTimeStamp) public horseIdToFedTimeStamp;
 
 
 #define macro MINT_HORSE() = takes(0) returns(0) {
-    0x04 calldataload
+    [TOTAL_SUPPLY]      // [TOTAL_SUPPLY]
+    sload               // [totalSupply]
+    dup1                // [totalSupply, totalSupply]
+    caller              // [msg.sender, totalSupply, totalSupply]
+    _MINT()             // [totalSupply]
+
+    // Increment the total supply
+    0x01                // [1, totalSupply]
+    add                 // [totalSupply + 1]
+    [TOTAL_SUPPLY]      // [TOTAL_SUPPLY, totalSupply + 1]
+    sstore              // []
+    stop
 }
 
 #define macro IS_HAPPY_HORSE() = takes(0) returns(0) {
