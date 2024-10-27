@@ -1,0 +1,7 @@
+// Imports
+
+// Error Declaration
+#define constant S11_WRONG_DATA = 0x6fd239b1 // keccak256("S11__WrongData()")
+#define constant S11_WRONG_DATA_AGAIN_LMAO = 0xbbbbbc10 // keccak256("S11__WrongDataAgainLmao()")
+
+// using forge CLI - cast keccak "InvalidAmount(uint256)"
