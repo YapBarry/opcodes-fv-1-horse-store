@@ -1,7 +1,47 @@
+// Code taken from https://sepolia.etherscan.io/address/0x444aE92325dCE5D14d40c30d2657547513674dD6#code
+
+///////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// Huff Code ////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
 // Imports
 
 // Error Declaration
 #define constant S11_WRONG_DATA = 0x6fd239b1 // keccak256("S11__WrongData()")
 #define constant S11_WRONG_DATA_AGAIN_LMAO = 0xbbbbbc10 // keccak256("S11__WrongDataAgainLmao()")
+// Storage slot for constructor
+#define constant CONTRACT_TO_CALL_SLOT = FREE_STORAGE_POINTER()
+
 
 // using forge CLI - cast keccak "InvalidAmount(uint256)"
+
+// Custom error macros
+#define macro REVERT_WITH_WRONG_DATA() = takes(0) returns(0) {
+    0x04 0x00 // [0x04, 0x00]
+    [S11_WRONG_DATA] // [0x6fd239b1, 0x04, 0x00]
+    0x00 // [0x00, 0x6fd239b1, 0x04, 0x00]
+    mstore // [0x04, 0x00] // memory - 0x00: 0x6fd239b1
+    revert // []
+}
+
+#define macro REVERT_WITH_WRONG_DATA_AGAIN_LMAO() = takes(0) returns(0) {
+    0x04 0x00 // [0x04, 0x00]
+    [S11_WRONG_DATA_AGAIN_LMAO] // [0xbbbbbc10, 0x04, 0x00]
+    0x00 mstore // [0x04, 0x00] // memory - 0x00: 0xbbbbbc10
+    revert
+}
+
+// Constructor macro
+#define macro CONSTRUCTOR() = takes(0) returns(0) {
+    // Load constructor parameters
+    0x24 calldataload   // [contractToCall]
+    0x04 calldataload   // [registry, contractToCall]
+
+    // Call parent constructor
+    dup1                    // [registry, registry, contractToCall]
+    CHALLENGE_CONSTRUCTOR() // [registry, contractToCall]
+
+    // Store contractToCall in storage
+    [CONTRACT_TO_CALL_SLOT] // [contractToCall]
+    SSTORE                  // []
+}
